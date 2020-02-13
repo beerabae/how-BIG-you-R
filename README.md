@@ -1,2 +1,2 @@
-# how-big-you-R
+# how-Big-you-R
 행정학도의 'R을 활용한 빅데이터 분석'의 첫걸음
