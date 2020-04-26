@@ -1,0 +1,79 @@
+                                                          #20/04/26 sun
+                                                    # R을 이용한 데이터시각화
+
+## plot() 함수 : x 와 y 의 2개 축을 기준으로 좌표를 찍듯이 그리는 컨셉을 가진 함수
+##대표적으로 산점도 표현시에 간단하게 구현 가능. 일반적 함수라 용도에 맞게 변경하여 사용가능.
+## plot() 함수는 x, y 인자 2개를 기본적으로 받음. 
+
+### 수량형변수가 아닌 seoson과 promotion의 경우 산점도로 표시 되기 힘든 것 같음. 일단 계절인데 숫자로 나옴!!
+plot(data4)
+plot(data5)
+
+## 수량형 변수인 smoothie 와 cookie 판매량 관계는 설명됨. smoothie 200개 팔릴때 cookie가 400~600개 팔리는 경향이 있음.
+plot(data6)
+
+
+                             #새로운 패키지 [tidyverse] : r을 쉽게 사용하기 위한 세계관을 만듬
+##설치가 안될때는, 크랜에서 직접 설치해와야 함!
+install.packages(tidyverse)
+library(tidyverse)
+bakery4 = as.tibble()
+
+
+a <- select(bakery, cookie, coffee, smoothie)
+b= filter(bakery, promotion=="없음")
+c= filter(bakery, seoson=="가을")
+## head함수는 원하는 행수만 보여줌
+## b데이타에 5개 행만 보여줌
+head(b,5)
+head(a,3)
+head(c,6)
+
+##filter 함수 : 데이터에서 범위에 속하는 해당 데이터만 골라내기, / select 함수 : 해당 데이터만 골라내기
+##두 장식 같은 논리
+bake <- select(filter(bakery, cake<50), cookie, coffee)
+bake <- bakery %>% filter(cake<50) %<% select(cookie, coffee)
+
+bake
+str(bake)
+
+## arrange함수 : 원하는 배열 설정/ desc 내림차순 표시 (큰수->작은수)
+## 두 방식 같은 논리
+arrange(bake, desc(coffee))
+bake %>% arrange(desc(coffee))
+
+fall <- select(filter(bakery, seoson=="가을"), cookie, coffee)
+winter<- bakery %>% filter(seoson=="겨울") %>% select(cookie, coffee)
+
+##영역 분할/결합 방법 1 : par(mfrow = ), par(mfcol = )
+##2개 이상의 다수의 그래프를 결합하는 방법 
+## par(mfrow = c(4,2))다수의 그래프를 4행 2열로 표시 (순서는 첫행 왼쪽->오른쪽-> 다시 둘째행 왼쪽->오른쪽 순으로 읽음) 
+
+par(mfrow = c(2, 2))
+plot(fall)
+plot(winter)
+
+
+                          #사원별판매현황 데이터(엑셀 csv 파일) -> r 로 데이터 변형시켜보기
+
+getwd()
+
+sale <- read.csv("data/사원별판매현황.csv")
+library(dplyr)
+
+select(sale, 홍길동)
+filter(sale, 전우치 >= 70)
+## arrange함수 (데이터, 변수) : 해당변수 오름차순/ desc(데이터, 변수) : 해당변수 내림차순
+arrange(sale, desc(전우치))
+arrange(sale, 홍길동)
+##두방식 같은 논리
+sale$일지매와전우치 <- sale$일지매 + sale$전우치
+mutate(sale, 일지매와전우치2=일지매+전우치)
+
+             #후보자별지역별예상지지율 데이터 / 실제 실습파일 암호걸려있어서 못함. 소스만 받아옴
+vote <- read.csv("수업용교재실습자료/후보자별지역별예상지지율.csv")
+head(vote,5)
+filter(vote, 지역 == "경기도")
+select(filter(vote, 예상지지율 > 50),이름,지역)
+arrange(filter(vote, 지역 == "서울시"), desc(예상지지율))
+edit(sale)
