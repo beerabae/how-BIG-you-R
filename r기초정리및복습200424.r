@@ -217,3 +217,57 @@ filter(vote, 지역 == "경기도")
 select(filter(vote, 예상지지율 > 50),이름,지역)
 arrange(filter(vote, 지역 == "서울시"), desc(예상지지율))
 edit(sale)
+
+
+
+
+                                    #20/04/17 mon [빅데이터분석 2/12  3일차 수업 복습]
+                                  #기존에 있는 연습패키지 "nycflights13" 의  flights데이터 분석해보기 
+
+install.packages("tidyverse")
+library(tidyverse)
+
+install.packages("nycflights13")
+library(nycflights13)
+flights
+str(flights)
+
+feb3 <- filter(flights, month==2, day==3)
+sep9<-filter(flights, month==9,day==9)
+oct10<-filter(flights,month==10,day==10)
+delay<- filter(flights, dep_delay>200 | arr_delay>200)
+
+select(flights, year,month,day)
+select(flights, dep_delay,arr_delay)
+## 2개 같은 논리
+A<- flights[,c(1:9)]
+B<-select(flights, year : arr_delay)
+
+##  dim(x) 함수 : dim은 dataframe의 길이를 관측할 때 사용하며, 행과 열의 개수를 모두 출력합니다.
+##같은 논리이기 때문에 결과 값 (행,열) 개수가 같다는 것을 알 수있다. 
+dim(A);dim(B)
+
+## str(x) 함수 : 모든변수를 왼쪽 세로축기준으로 보여주는 도구이다. (빅데이터의 경우 변수가 생략되어서 보여질 때가 있다.)
+str(flights)
+
+## select 함수와 everything() 함수를 결합하면 원하는 컬럼을 맨앞으로 두고 정렬 가능
+select(flights, hour,minute,time_hour, everything() )
+
+## select 함수와 contain 함수를 같이 사용하여 특정 값이 포함된 컬럼 선택
+select(flights, contains("Time"))
+## 데이터에 $~ 하면 자동으로 변수가 삽입된다. 
+flights$number<- 2
+## names(x) 함수 : 데이터의 변수명만 보여준다.
+names(flights)
+
+## 활성화 시작 attach(데이터 프레임 이름), 끝 detach(데이터 프레임 이름): 다수의 R 명령문 입력 시 적합
+##데이터 프레임 이름을 지정하지 않으면 R은 어디에서 변수를 가져와야 할지 알지 못함. 
+## 따라서 데이터프레임$변수명 형식으로 객제 지정해주어야 R이 이해함.
+## 명령이 적을때 $ 사용, 명령문 많아지면 with(x), 공통적으로 다수 사용할때 attach(x)와 detach(x) 사용
+
+attach(flights)
+
+## 데이터프레임을 생략할수는 있지만, 다만, delay1 변수명을 r기존데이터프레임에 새로추가하고 싶다면, 기존데이터프레임$새변수명 해줘야함.
+flights$delay1<- arr_delay-dep_delay
+flights<-mutate(flights, delay2=arr_delay-dep_delay)
+
