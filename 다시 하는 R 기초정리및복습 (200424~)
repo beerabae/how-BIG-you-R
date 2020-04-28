@@ -221,7 +221,7 @@ edit(sale)
 
 
 
-                                    #20/04/17 mon [빅데이터분석 2/12  3일차 수업 복습]
+                                    #20/04/27 mon [빅데이터분석 2/12  3일차 수업 복습]
                                   #기존에 있는 연습패키지 "nycflights13" 의  flights데이터 분석해보기 
 
 install.packages("tidyverse")
@@ -270,4 +270,57 @@ attach(flights)
 ## 데이터프레임을 생략할수는 있지만, 다만, delay1 변수명을 r기존데이터프레임에 새로추가하고 싶다면, 기존데이터프레임$새변수명 해줘야함.
 flights$delay1<- arr_delay-dep_delay
 flights<-mutate(flights, delay2=arr_delay-dep_delay)
+
+
+
+                                        
+
+                                        #20/04/28 tue [빅데이터분석 2/12  3일차 수업 복습]
+
+
+## 2개 같은 논리임을 확인.
+as.data.frame(flights)
+
+
+
+# 내림차순 정렬을 해봄
+arrange(flights, desc(dep_time), desc(day))
+arrange(flights, desc(dep_delay), desc(arr_delay))
+
+attach(flights)
+
+##결측값을 통계 분석 시 제외(미포함): na.rm = TRUE  
+##결측값이란 응답이 누락된 값을 뜻함.
+## 만약, 결측값이 포함된 데이터를 통계분석하게 되면 NA라는 값만 나오게 됨.
+
+
+## 일변량 연속형 자료에 대해 기술통계량(descriptive statistics)을 이용한 자료의 요약과 정리는 크게 3가지
+### (1) 중심화 경향 (central tendency) : 산술평균, 중앙값, 최빈값, 기하평균, CAGR, 조화평균, 가중평균
+### (2) 퍼짐 정도 (dispersion) : 분산, 표준편차, 변이계수, 범위, IQR, 백분위수
+### (3) 분포형태와 대칭정도 (distribution) : 왜도, 첨도, 분위수-분위수 
+
+
+## max:최대값, min:최소값, mean :평균값, median:중간값(짝수면 양쪽의 평균, 홀수면 순서상 중간값),
+max(day, na.rm=T)
+min(day, na.rm=T)
+mean(day, na.rm=T)
+median(day, na.rm = T)
+
+## range :최소값, 최대값 / diff(range(x)) : 최대값-최소값 = 특이값이 있을 경우 왜곡될 위험 있음
+range(day, na.rm=T)
+diff(range(day))
+
+## IQR : 3분위수(75%) - 1분위수(25%) = 특이값에 강함  @2분위수:median 중간값
+IQR(day, na.rm=T)
+
+sum(day, na.rm=T)
+
+###  var : 분산(variance) / sd : 표준편차(standard deviation) = 퍼짐 정도, 클수록 퍼짐정도 큼
+### 분산이 원자료보다 scale이 커지기 때문에, 분산에 제곱근한 표준편차를 사용하여 scale 동일 시킴.
+
+sd(day, na.rm=T)
+var(day, na.rm=T)
+
+detach(flights)
+
 
