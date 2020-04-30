@@ -323,4 +323,79 @@ var(day, na.rm=T)
 
 detach(flights)
 
+                                        
+                                        
+                                        
+                                        #20/04/29~30 WEDN,THUR [빅데이터분석 2/12  3일차 오전 수업 복습]
+
+install.packages("psych")
+library(psych)
+describe(flights)
+
+
+## psych package의 describe() 함수는 summary() 보다는 많고 stat.desc() 보다는 적은 기술통계량을 보여줌.
+## describe() : 관측값 개수(n), 평균(mean), 표준편차(sd), 중앙값(median), 절삭평균(10% 절삭평균),
+## 중위값절대편차(from 중위값) (MAD, median absolute deviation), 최소값(min), 최대값(max), 범위(range), 왜도(skew), 첨도(kurtosis), 표준오차(SE, standard error)
+
+## aggregate('함수를 적용하고자 하는 컬럼' ~ '기준이 되는 컬럼', data, FUN)
+## 도착지, 운항기, 월에 따른 도착지연시간의 평균을 알고 싶다. 
+delaywhy <- aggregate(arr_delay ~ dest + carrier + month , flights, mean)
+str(delaywhy)
+head(delaywhy)
+library(tidyverse)
+arrange(delaywhy, arr_delay)
+arrange(delaywhy, desc(arr_delay))
+
+#연, 월에 따른 도착지연 평균을 알아봄. 
+whendelay <- aggregate(arr_delay~ year, month, flights, mean)
+library(dplyr)
+#도착지연이 가장 높은 연, 월을 알 수 있음.
+arrange(whendelay, desc(arr_delay))
+
+#공항별 도착지연 평균을 알아봄.
+wheredelay <- aggregate(arr_delay ~ origin, flights, mean) #출발공항, 월에 따른 도착지연시간의 평균 
+#도착지연이 가장 높은 공항을 알 수 있음. 
+arrange(wheredelay, desc(arr_delay)) #도착지연시간이 가장 큰 순서대로 보고싶다. => 뉴욕 JFK공항 7월이 지연많음.
+
+## aggregate 와 비슷한 방식?!
+## summarise(group_by(dataframe, factor_var), mean, sd, ...) : 그룹별 요약 통계량 계산
+
+
+#공항을 그룹화 하여 출발공항별로  요약통게량 계산->연착지연 평균과 분산을 알아봄.
+group1 <- group_by(flights, origin)
+summarize(group1,
+          delaymean = mean(arr_delay, na.rm=T),
+          delaysd = sd(arr_delay, na.rm=T))
+              
+
+summarize(group_by(subset_df, month),
+          Konkuk = mean(arr_delay, na.rm = T),
+          Konkuk2 = sd(arr_delay, na.rm = T),
+          Konkuk3 = sum(arr_delay, na.rm = T),
+          konkuk4 = max(arr_delay, na.rm = T)
+)
+
+
+# 개인적으로 생각해보건데, aggregate()는 원하는 콜럼기준에 따른 변수값을 보고자 하는 것이다. 만약 desc내림차순
+#으로 배열한다며느 변수값이 가장 큰값이 어떤 콜럼기준에 의해 나오는 지 알 수 있겠다. 
+
+#summarize 함수의 경우 group_by를 하여 데이터프레임에서 특정변수의 측정값들을 각 그룹으로 형성해주고, 그에 따른 
+#다른 컬럼의 요약 기술통계값 (maan, sd 등등)을 알고 싶을 때 사용할 수 있겠다. 
+
+
+
+bakery <- read.csv("bakery1.csv", header = T, stringsAsFactors = F)
+str(bakery)
+bakery$month <- month(bakery$date)
+
+sum_bakery <- summarize(group_by(bakery, month, promotion),
+                        cake_mean = mean(cake, na.rm = T),
+                        cake_sd = sd(cake, na.rm = T),
+                        cake_sum = sum(cake, na.rm = T),
+                        cake_max = max(cake, na.rm = T)
+)
+
+sum_bakery
+
+
 
